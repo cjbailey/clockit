@@ -1,4 +1,4 @@
 # clockit
 Created with CodeSandbox
 
-A super simply chess-style clock for keeping track of your day.
+A super simple chess-style clock for keeping track of your day.
