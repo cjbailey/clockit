@@ -1,7 +1,8 @@
+
 export default class Time {
   private timeInMs: number;
 
-  constructor(initial: number = 0) {
+  constructor(initial = 0) {
     this.timeInMs = initial;
   }
 
@@ -17,7 +18,7 @@ export default class Time {
     return new Time(this.timeInMs - other.timeInMilliseconds);
   }
 
-  public toString(format: string = "hh:mm:ss.SSS") {
+  public toString(format = "hh:mm:ss.SSS") {
     const hours = ("00" + Math.floor(this.timeInMs / 3600000).toFixed(0)).slice(
       -2
     );

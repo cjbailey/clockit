@@ -1,16 +1,18 @@
 import IWorkListItem from "../interfaces/IWorkListItem";
 import Time from "./Time";
 
+type CallbackFn = () => void;
+
 export default class TimerAction {
   public readonly workListItem: IWorkListItem;
-  private _cancellationToken: number = 0;
+  private _cancellationToken = 0;
   private readonly _interval: number;
-  private readonly _onIntervalCallback: Function | undefined;
+  private readonly _onIntervalCallback: CallbackFn | undefined;
 
   constructor(
     item: IWorkListItem,
-    onIntervalCallback?: Function,
-    interval: number = 60000
+    onIntervalCallback?: CallbackFn,
+    interval = 60000
   ) {
     this.workListItem = item;
     this._onIntervalCallback = onIntervalCallback;
