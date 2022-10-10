@@ -1,3 +1,4 @@
+import ISerialisedTime from "./interfaces/ISerialisedTime";
 import IWorkListItem from "./interfaces/IWorkListItem";
 import Time from "./types/Time";
 
@@ -11,11 +12,12 @@ export function Deserialise(json: string | null): IWorkListItem[] {
   }
 
   const obj = JSON.parse(json, (key: string, value: any) => {
+    const workListItem = value as ISerialisedTime;
     switch (key) {
       case "startTime":
       case "lastStartTime":
       case "elapsedTime":
-        return new Time(value._timeInMs);
+        return new Time(workListItem.timeInMs);
 
       default:
         return value;

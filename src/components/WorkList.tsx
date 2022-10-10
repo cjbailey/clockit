@@ -1,9 +1,9 @@
-import { Dispatch, SetStateAction, useState } from "react";
-import IWorkListItem from "../interfaces/IWorkListItem";
+import React, { Dispatch, useState } from "react";
 import IWorkListItemAction from "../interfaces/IWorkListAction";
-import { WorkListActionType } from "../types/WorkListActionType";
+import IWorkListItem from "../interfaces/IWorkListItem";
 import Time from "../types/Time";
 import TimerAction from "../types/TimerAction";
+import { WorkListActionType } from "../types/WorkListActionType";
 import WorkItem from "./WorkItem";
 
 interface IProps {
@@ -24,15 +24,15 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
         title: title,
         startTime: new Time(),
         lastStartTime: new Time(),
-        elapsedTime: new Time()
-      }
+        elapsedTime: new Time(),
+      },
     });
   };
 
   const deleteItem = (id: number) => {
     workItemDispatcher({
       type: WorkListActionType.Delete,
-      value: id
+      value: id,
     });
 
     if (activeTimer && activeTimer.workListItem.id === id) {
@@ -42,7 +42,7 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
   };
 
   const startItemTimer = (id: number) => {
-    let idx = items.findIndex((x) => x.id === id);
+    const idx = items.findIndex((x) => x.id === id);
     if (idx < 0) {
       return;
     }
@@ -62,10 +62,10 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
       () => {
         workItemDispatcher({
           type: WorkListActionType.Update,
-          value: items[idx]
+          value: items[idx],
         });
       },
-      1000
+      30000
     );
 
     timer.start();
@@ -75,7 +75,7 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
   const resetAll = () => {
     // setItems([]);
     workItemDispatcher({
-      type: WorkListActionType.Reset
+      type: WorkListActionType.Reset,
     });
 
     if (activeTimer) {

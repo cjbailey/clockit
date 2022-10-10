@@ -8,13 +8,13 @@ export function workItemsReducer(
   action: IWorkListAction
 ): IWorkListItem[] {
   let newState: IWorkListItem[];
+  const workListItem = action.value as IWorkListItem;
 
   switch (action.type) {
     case WorkListActionType.Create:
       if (!action.value) return state;
 
-      const w = action.value as IWorkListItem;
-      newState = [...state, w];
+      newState = [...state, workListItem];
       break;
 
     case WorkListActionType.Delete:
@@ -22,11 +22,7 @@ export function workItemsReducer(
       break;
 
     case WorkListActionType.Update:
-      const workItem = action.value as IWorkListItem;
-      const idx = state.findIndex((x) => x.id === workItem.id);
-      if (idx >= 0) {
-        state[idx] = workItem;
-      }
+      state = workListUpdate(state, workListItem);
       newState = [...state];
       break;
 
@@ -37,4 +33,13 @@ export function workItemsReducer(
 
   localStorage.setItem("my-work-list", Serialise(newState));
   return newState;
+}
+
+function workListUpdate(state: IWorkListItem[], workListItem: IWorkListItem) {
+  const idx = state.findIndex((x) => x.id === workListItem.id);
+  if (idx >= 0) {
+    state[idx] = workListItem;
+  }
+
+  return state;
 }

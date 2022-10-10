@@ -1,4 +1,4 @@
-import { ChangeEvent, KeyboardEvent, useState } from "react";
+import React, { ChangeEvent, KeyboardEvent, useState } from "react";
 import Time from "../types/Time";
 import { WorkListItemId } from "../types/WorkListItemId";
 import DeleteButton from "./DeleteButton";
@@ -24,7 +24,7 @@ export default function WorkItem({
   disabled = false,
   onCreateWorkItem,
   onDeleteWorkItem,
-  onStartItemTimer
+  onStartItemTimer,
 }: IProps) {
   const [_title, setTitle] = useState(title);
 
@@ -36,7 +36,7 @@ export default function WorkItem({
     if (ev.key === "Enter") {
       // ev.preventDefault();
 
-      let val = ev.currentTarget.value || "???";
+      const val = ev.currentTarget.value || "???";
       if (!id) {
         // ev.currentTarget.value = "";
         setTitle("");
@@ -79,18 +79,29 @@ export default function WorkItem({
         <input onChange={titleInput} onKeyUp={keyUp} value={_title} />
       </div>
       {startTime ? (
-        <div className="start-time">{startTime.toString("hh:mm:ss")}</div>
+        <div className="start-time time-hdr">
+          {startTime.toString("hh:mm:ss")}
+        </div>
       ) : (
         <div className="start-time"></div>
       )}
+
       {lastStartTime ? (
-        <div className="last-start-time">
+        <div className="last-start-time time-hdr">
           {lastStartTime.toString("hh:mm:ss")}
         </div>
       ) : (
         <div className="last-start-time"></div>
       )}
-      <div className="elapsed-time">{elapsedTime?.toString("hh:mm:ss")}</div>
+
+      {elapsedTime ? (
+        <div className="elapsed-time time-hdr">
+          {elapsedTime?.toString("hh:mm:ss")}
+        </div>
+      ) : (
+        <div className="elapsed-time"></div>
+      )}
+
       {title && title.length > 0 && (
         <>
           <div>
