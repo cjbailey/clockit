@@ -1,15 +1,12 @@
-import React, { useContext, useState } from "react";
+import React from "react";
 import { ReactComponent as MenuIcon } from "../icons/menu-icon.svg";
-import IAppSettings from "../interfaces/IAppSettings";
 import { useAppContext } from "./AppContext";
 
 export default function Menu() {
   const appContext = useAppContext();
 
-  const [showSettings, setShowSettings] = useState(false);
   const openSettings = () => {
-    setShowSettings(true);
-    appContext.settingsShown = true;
+    appContext.showSettings();
   };
 
   return (
