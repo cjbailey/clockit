@@ -1,7 +1,9 @@
-import React, { createContext, PropsWithChildren, useContext, useState } from "react";
+import React, { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
 import IAppSettings from "../interfaces/IAppSettings";
 
-const defaultAppSettings: IAppSettings = {
+const LS_SETTINGS = "clockit-settings";
+
+let defaultAppSettings: IAppSettings = {
   settingsShown: false,
   showSettings() {},
   hideSettings() {},
@@ -11,12 +13,29 @@ const defaultAppSettings: IAppSettings = {
   setTimeFormat() {},
 };
 
+const lsAppSettings = localStorage.getItem(LS_SETTINGS);
+if (lsAppSettings) {
+  defaultAppSettings = JSON.parse(lsAppSettings) as IAppSettings;
+} else {
+  localStorage.setItem(LS_SETTINGS, JSON.stringify({
+    updateInterval: defaultAppSettings.updateInterval,
+    timeFormat: defaultAppSettings.timeFormat
+  }));
+}
+
 const _AppContext = createContext<IAppSettings>(defaultAppSettings);
 
 const AppContext = (props: PropsWithChildren) => {
   const [showSettings, setShowSettings] = useState(defaultAppSettings.settingsShown);
   const [updateInterval, setUpdateInterval] = useState(defaultAppSettings.updateInterval);
   const [timeFormat, setTimeFormat] = useState(defaultAppSettings.timeFormat);
+
+  useEffect(() => {
+    localStorage.setItem(LS_SETTINGS, JSON.stringify({
+      updateInterval,
+      timeFormat
+    }));
+  }, [updateInterval, timeFormat]);
 
   return (
     <_AppContext.Provider
