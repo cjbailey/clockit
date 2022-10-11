@@ -20,7 +20,7 @@ export default function Settings() {
   };
 
   const inputKeyUp = (ev: KeyboardEvent<HTMLInputElement>) => {
-    if (ev.code === "Enter") {
+    if (ev.code === "Enter" || ev.code === "NumpadEnter") {
       appContext.setUpdateInterval(intervalValue * 1000);
       appContext.setTimeFormat(timeFormat);
       appContext.hideSettings();
