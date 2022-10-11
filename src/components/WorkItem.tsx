@@ -1,6 +1,7 @@
 import React, { ChangeEvent, KeyboardEvent, useState } from "react";
 import Time from "../types/Time";
 import { WorkListItemId } from "../types/WorkListItemId";
+import { useAppContext } from "./AppContext";
 import DeleteButton from "./DeleteButton";
 
 interface IProps {
@@ -26,7 +27,12 @@ export default function WorkItem({
   onDeleteWorkItem,
   onStartItemTimer,
 }: IProps) {
+  const { timeFormat } = useAppContext();
   const [_title, setTitle] = useState(title);
+
+  const timeFormatStyle = {
+    "--format": `"${timeFormat}"`,
+  };
 
   const titleInput = (ev: ChangeEvent<HTMLInputElement>) => {
     setTitle(ev.currentTarget.value || "");
@@ -79,24 +85,24 @@ export default function WorkItem({
         <input onChange={titleInput} onKeyUp={keyUp} value={_title} />
       </div>
       {startTime ? (
-        <div className="start-time time-hdr">
-          {startTime.toString("hh:mm:ss")}
+        <div className="start-time time-hdr" style={timeFormatStyle as any}>
+          {startTime.toString(timeFormat)}
         </div>
       ) : (
         <div className="start-time"></div>
       )}
 
       {lastStartTime ? (
-        <div className="last-start-time time-hdr">
-          {lastStartTime.toString("hh:mm:ss")}
+        <div className="last-start-time time-hdr" style={timeFormatStyle as any}>
+          {lastStartTime.toString(timeFormat)}
         </div>
       ) : (
         <div className="last-start-time"></div>
       )}
 
       {elapsedTime ? (
-        <div className="elapsed-time time-hdr">
-          {elapsedTime?.toString("hh:mm:ss")}
+        <div className="elapsed-time time-hdr" style={timeFormatStyle as any}>
+          {elapsedTime?.toString(timeFormat)}
         </div>
       ) : (
         <div className="elapsed-time"></div>
