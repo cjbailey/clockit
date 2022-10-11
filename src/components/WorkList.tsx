@@ -4,6 +4,7 @@ import IWorkListItem from "../interfaces/IWorkListItem";
 import Time from "../types/Time";
 import TimerAction from "../types/TimerAction";
 import { WorkListActionType } from "../types/WorkListActionType";
+import { useAppContext } from "./AppContext";
 import WorkItem from "./WorkItem";
 
 interface IProps {
@@ -13,6 +14,7 @@ interface IProps {
 
 export default function WorkList({ items, workItemDispatcher }: IProps) {
   const [activeTimer, setActiveTimer] = useState<TimerAction | null>(null);
+  const appContext = useAppContext();
 
   const addItem = (title: string) => {
     const lastIdx = items.at(-1)?.id || 0;
@@ -65,7 +67,7 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
           value: items[idx],
         });
       },
-      30000
+      appContext.updateInterval
     );
 
     timer.start();

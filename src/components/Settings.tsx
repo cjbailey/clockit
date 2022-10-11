@@ -1,20 +1,73 @@
-import React, { useContext } from "react";
+import React, { ChangeEvent, KeyboardEvent, MouseEvent, useState } from "react";
 import { useAppContext } from "./AppContext";
+import DeleteButton from "./DeleteButton";
+
+const validTimeFormats = ["hh:mm:ss", "hh:mm"];
 
 export default function Settings() {
   const appContext = useAppContext();
+  const [intervalValue, setIntervalValue] = useState(appContext.updateInterval / 1000);
+  const [timeFormat, setTimeFormat] = useState(appContext.timeFormat);
 
   const closeSettings = () => {
+    appContext.setUpdateInterval(intervalValue * 1000);
+    appContext.setTimeFormat(timeFormat);
     appContext.hideSettings();
   };
 
+  const changeInterval = (ev: ChangeEvent<HTMLInputElement>) => {
+    setIntervalValue(parseInt(ev.target.value));
+  };
+
+  const inputKeyUp = (ev: KeyboardEvent<HTMLInputElement>) => {
+    if (ev.code === "Enter") {
+      appContext.setUpdateInterval(intervalValue * 1000);
+      appContext.setTimeFormat(timeFormat);
+      appContext.hideSettings();
+      ev.preventDefault;
+    }
+  };
+
+  const changeTimeFormat = (ev: ChangeEvent<HTMLSelectElement>) => {
+    setTimeFormat(ev.target.value);
+  };
+
+  const clickOutsideComponent = (ev: MouseEvent<HTMLDivElement>) => {
+    if ((ev.target as HTMLElement)?.className === "settings-component") {
+      closeSettings();
+    }
+  };
+
   return (
-    <div className="settings-component">
+    <div className="settings-component" onClick={clickOutsideComponent}>
       <div className="settings-inner">
         <h2>Settings</h2>
-        <label htmlFor="update-interval">Update Interval</label>
-        <input name="update-interval" value={30} />
-        <button onClick={closeSettings}>Close</button>
+        <div className="row">
+          <label htmlFor="update-interval">Update every</label>
+          {/* <span>Update every</span> */}
+          <input
+            name="update-interval"
+            type="number"
+            value={intervalValue}
+            onChange={changeInterval}
+            onKeyUp={inputKeyUp}
+            min={0}
+            max={300}
+          />
+          <span>seconds</span>
+        </div>
+        <div className="row">
+          <label htmlFor="time-format">Time format</label>
+          <select className="time-format-picker" onChange={changeTimeFormat}>
+            {validTimeFormats.map((x) => (
+              <option key={x} selected={x === timeFormat}>
+                {x}
+              </option>
+            ))}
+          </select>
+          {/* <input name="time-format" value={timeFormat} onChange={changeTimeFormat} onKeyUp={inputKeyUp} /> */}
+        </div>
+        <DeleteButton onClick={closeSettings} />
       </div>
     </div>
   );

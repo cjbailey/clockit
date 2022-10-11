@@ -4,4 +4,6 @@ export default interface IAppSettings {
   hideSettings(): void;
   updateInterval: number;
   setUpdateInterval(interval: number): void;
+  timeFormat: string;
+  setTimeFormat(format: string): void;
 }
