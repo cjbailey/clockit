@@ -67,7 +67,7 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
           value: items[idx],
         });
       },
-      appContext.updateInterval
+      appContext.settings.updateInterval
     );
 
     timer.start();

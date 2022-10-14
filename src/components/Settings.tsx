@@ -6,13 +6,14 @@ const validTimeFormats = ["hh:mm:ss", "hh:mm"];
 
 export default function Settings() {
   const appContext = useAppContext();
-  const [intervalValue, setIntervalValue] = useState(appContext.updateInterval / 1000);
-  const [timeFormat, setTimeFormat] = useState(appContext.timeFormat);
+  const [intervalValue, setIntervalValue] = useState(appContext.settings.updateInterval / 1000);
+  const [timeFormat, setTimeFormat] = useState(appContext.settings.timeFormat);
 
   const closeSettings = () => {
     appContext.setUpdateInterval(intervalValue * 1000);
     appContext.setTimeFormat(timeFormat);
-    appContext.hideSettings();
+    // appContext.hideSettings();
+    appContext.popView();
   };
 
   const changeInterval = (ev: ChangeEvent<HTMLInputElement>) => {

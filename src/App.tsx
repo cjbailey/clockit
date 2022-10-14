@@ -22,19 +22,15 @@ function getWorkList(): IWorkListItem[] {
 }
 
 export default function App() {
-  const [workItems, workItemDispatcher] = useReducer(
-    workItemsReducer,
-    [],
-    getWorkList
-  );
+  const [workItems, workItemDispatcher] = useReducer(workItemsReducer, [], getWorkList);
 
-  const appSettings = useAppContext();
+  const appContext = useAppContext();
 
   return (
     <div className="App">
       <Menu />
       <WorkList items={workItems} workItemDispatcher={workItemDispatcher} />
-      {appSettings.settingsShown && <Settings />}
+      {/* {appContext.settingsShown && <Settings />} */}
     </div>
   );
 }

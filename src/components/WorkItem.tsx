@@ -27,11 +27,11 @@ export default function WorkItem({
   onDeleteWorkItem,
   onStartItemTimer,
 }: IProps) {
-  const { timeFormat } = useAppContext();
+  const { settings } = useAppContext();
   const [_title, setTitle] = useState(title);
 
   const timeFormatStyle = {
-    "--format": `"${timeFormat}"`,
+    "--format": `"${settings.timeFormat}"`,
   };
 
   const titleInput = (ev: ChangeEvent<HTMLInputElement>) => {
@@ -86,7 +86,7 @@ export default function WorkItem({
       </div>
       {startTime ? (
         <div className="start-time time-hdr" style={timeFormatStyle as any}>
-          {startTime.toString(timeFormat)}
+          {startTime.toString(settings.timeFormat)}
         </div>
       ) : (
         <div className="start-time"></div>
@@ -94,7 +94,7 @@ export default function WorkItem({
 
       {lastStartTime ? (
         <div className="last-start-time time-hdr" style={timeFormatStyle as any}>
-          {lastStartTime.toString(timeFormat)}
+          {lastStartTime.toString(settings.timeFormat)}
         </div>
       ) : (
         <div className="last-start-time"></div>
@@ -102,7 +102,7 @@ export default function WorkItem({
 
       {elapsedTime ? (
         <div className="elapsed-time time-hdr" style={timeFormatStyle as any}>
-          {elapsedTime?.toString(timeFormat)}
+          {elapsedTime?.toString(settings.timeFormat)}
         </div>
       ) : (
         <div className="elapsed-time"></div>

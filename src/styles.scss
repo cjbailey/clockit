@@ -47,73 +47,73 @@ body {
       }
     }
   }
+}
 
-  .settings-component {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #042326aa;
+.settings-component {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #042326aa;
 
-    .settings-inner {
-      background-color: $Color-theme-2-hex;
-      margin: 50vh auto;
-      padding: 20px 40px 40px 40px;
-      max-width: 400px;
-      transform: translateY(-50%);
-      border-radius: 3px;
+  .settings-inner {
+    background-color: $Color-theme-2-hex;
+    margin: 50vh auto;
+    padding: 20px 40px 40px 40px;
+    max-width: 400px;
+    transform: translateY(-50%);
+    border-radius: 3px;
+    font-size: 14pt;
+    text-align: left;
+
+    h2 {
+      margin-top: 0;
+      color: $Color-theme-4-hex;
+      font-style: italic;
       font-size: 14pt;
-      text-align: left;
+    }
 
-      h2 {
-        margin-top: 0;
-        color: $Color-theme-4-hex;
-        font-style: italic;
-        font-size: 14pt;
+    .row {
+      display: flex;
+      flex-direction: row;
+      margin-bottom: 10px;
+    }
+
+    label {
+      margin-right: 10px;
+      width: 120px;
+    }
+
+    input {
+      width: 100px;
+      margin-right: 10px;
+    }
+
+    .time-format-picker {
+      background: none;
+      border: none;
+      border-bottom: 1px solid $Color-theme-4-hex;
+      border-radius: 3px;
+      color: inherit;
+      font-size: inherit;
+
+      option {
+        background-color: $Color-theme-3-hex;
       }
+    }
 
-      .row {
-        display: flex;
-        flex-direction: row;
-        margin-bottom: 10px;
-      }
+    .delete-btn {
+      position: absolute;
+      top: 12px;
+      right: 0px;
 
-      label {
-        margin-right: 10px;
-        width: 120px;
-      }
+      svg {
+        fill: $Color-theme-2-hex;
 
-      input {
-        width: 100px;
-        margin-right: 10px;
-      }
-
-      .time-format-picker {
-        background: none;
-        border: none;
-        border-bottom: 1px solid $Color-theme-4-hex;
-        border-radius: 3px;
-        color: inherit;
-        font-size: inherit;
-
-        option {
-          background-color: $Color-theme-3-hex;
-        }
-      }
-
-      .delete-btn {
-        position: absolute;
-        top: 12px;
-        right: 0px;
-
-        svg {
-          fill: $Color-theme-2-hex;
-
-          &:hover,
-          &:active {
-            fill: $Color-theme-5-hex;
-          }
+        &:hover,
+        &:active {
+          fill: $Color-theme-5-hex;
         }
       }
     }
