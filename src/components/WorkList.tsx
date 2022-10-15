@@ -6,12 +6,17 @@ import TimerAction from "../types/TimerAction";
 import { WorkListActionType } from "../types/WorkListActionType";
 import { useAppContext } from "./AppContext";
 import Button from "./Button";
+import ConfirmDialog from "./ConfirmDialog";
 import WorkItem from "./WorkItem";
 
 interface IProps {
   items: IWorkListItem[];
   workItemDispatcher: Dispatch<IWorkListItemAction>;
 }
+
+const CONFIRM_DIALOG = (
+  <ConfirmDialog message="Are you sure you want to delete all items?" acceptText="Yes" cancelText="No" />
+);
 
 export default function WorkList({ items, workItemDispatcher }: IProps) {
   const [activeTimer, setActiveTimer] = useState<TimerAction | null>(null);
@@ -75,8 +80,12 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
     setActiveTimer(timer);
   };
 
-  const resetAll = () => {
-    // setItems([]);
+  const resetAll = async () => {
+    const confirm = await appContext.pushView<boolean>(CONFIRM_DIALOG);
+    if (!confirm) {
+      return;
+    }
+
     workItemDispatcher({
       type: WorkListActionType.Reset,
     });

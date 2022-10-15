@@ -10,9 +10,6 @@ const defaultAppContext: IAppContext = {
     updateInterval: 30000,
     timeFormat: "hh:mm:ss",
   },
-  // settingsShown: false,
-  // showSettings() {},
-  // hideSettings() {},
   setUpdateInterval() {},
   setTimeFormat() {},
   pushView() {
@@ -51,7 +48,7 @@ const AppContext = (props: PropsWithChildren) => {
     );
   }, [updateInterval, timeFormat]);
 
-  const pushView = async (component: JSX.Element): Promise<void> => {
+  const pushView = async <T,>(component: JSX.Element): Promise<T> => {
     return new Promise((resolver) => {
       setViewStack((prev) => {
         return [...prev, { component, resolver }];

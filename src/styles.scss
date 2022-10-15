@@ -245,6 +245,43 @@ input {
   }
 }
 
+.full-screen-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #042326aa;
+}
+
+.confirm-dialog {
+  max-width: 400px;
+  margin: 50vh auto;
+  transform: translateY(-50%);
+  background-color: $Color-theme-2-hex;
+  border-radius: 3px;
+  padding: 20px;
+  font-size: 14pt;
+  text-align: center;
+
+  .confirm-dialog-message {
+    margin: 0;
+    color: $Color-theme-4-hex;
+    font-style: italic;
+  }
+
+  .confirm-dialog-buttons {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    .confirm-dialog-btn {
+      margin: 0 10px;
+    }
+  }
+}
+
 @keyframes glow {
   0% {
     box-shadow: 0 0 1px 1px #f05800;
