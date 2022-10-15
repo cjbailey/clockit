@@ -2,11 +2,9 @@ import IWorkListItem from "./interfaces/IWorkListItem";
 import IWorkListAction from "./interfaces/IWorkListAction";
 import { WorkListActionType } from "./types/WorkListActionType";
 import { Serialise } from "./WorkListSerialiser";
+import Time from "./types/Time";
 
-export function workItemsReducer(
-  state: IWorkListItem[],
-  action: IWorkListAction
-): IWorkListItem[] {
+export function workItemsReducer(state: IWorkListItem[], action: IWorkListAction): IWorkListItem[] {
   let newState: IWorkListItem[];
   const workListItem = action.value as IWorkListItem;
 
@@ -29,6 +27,18 @@ export function workItemsReducer(
     case WorkListActionType.Reset:
       newState = [];
       break;
+
+    case WorkListActionType.ResetTimes:
+      newState = state.map((x) => {
+        x.startTime = new Time();
+        x.lastStartTime = new Time();
+        x.elapsedTime = new Time();
+        return x;
+      });
+      break;
+
+    default:
+      newState = state;
   }
 
   localStorage.setItem("my-work-list", Serialise(newState));

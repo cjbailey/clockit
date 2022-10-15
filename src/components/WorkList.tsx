@@ -14,8 +14,12 @@ interface IProps {
   workItemDispatcher: Dispatch<IWorkListItemAction>;
 }
 
-const CONFIRM_DIALOG = (
+const CONFIRM_RESET_ALL_DIALOG = (
   <ConfirmDialog message="Are you sure you want to delete all items?" acceptText="Yes" cancelText="No" />
+);
+
+const CONFIRM_RESET_TIMES_DIALOG = (
+  <ConfirmDialog message="Are you sure you want to reset all times?" acceptText="Yes" cancelText="No" />
 );
 
 export default function WorkList({ items, workItemDispatcher }: IProps) {
@@ -81,13 +85,29 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
   };
 
   const resetAll = async () => {
-    const confirm = await appContext.pushView<boolean>(CONFIRM_DIALOG);
+    const confirm = await appContext.pushView<boolean>(CONFIRM_RESET_ALL_DIALOG);
     if (!confirm) {
       return;
     }
 
     workItemDispatcher({
       type: WorkListActionType.Reset,
+    });
+
+    if (activeTimer) {
+      activeTimer.stop();
+      setActiveTimer(null);
+    }
+  };
+
+  const resetTimes = async () => {
+    const confirm = await appContext.pushView<boolean>(CONFIRM_RESET_TIMES_DIALOG);
+    if (!confirm) {
+      return;
+    }
+
+    workItemDispatcher({
+      type: WorkListActionType.ResetTimes,
     });
 
     if (activeTimer) {
@@ -127,7 +147,8 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
         <WorkItem onCreateWorkItem={addItem} />
       </div>
       <div className="work-list-actions">
-        <Button onClick={resetAll}>Reset All</Button>
+        <Button onClick={resetAll}>Delete All</Button>
+        <Button onClick={resetTimes}>Reset Times</Button>
       </div>
     </div>
   );

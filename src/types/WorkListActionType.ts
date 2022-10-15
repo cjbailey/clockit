@@ -2,5 +2,6 @@ export enum WorkListActionType {
   Create,
   Delete,
   Update,
-  Reset
+  Reset,
+  ResetTimes,
 }
