@@ -10,9 +10,9 @@ const defaultAppContext: IAppContext = {
     updateInterval: 30000,
     timeFormat: "hh:mm:ss",
   },
-  settingsShown: false,
-  showSettings() {},
-  hideSettings() {},
+  // settingsShown: false,
+  // showSettings() {},
+  // hideSettings() {},
   setUpdateInterval() {},
   setTimeFormat() {},
   pushView() {
@@ -37,7 +37,6 @@ if (lsAppSettings) {
 const _AppContext = createContext<IAppContext>(defaultAppContext);
 
 const AppContext = (props: PropsWithChildren) => {
-  const [showSettings, setShowSettings] = useState(defaultAppContext.settingsShown);
   const [updateInterval, setUpdateInterval] = useState(defaultAppContext.settings.updateInterval);
   const [timeFormat, setTimeFormat] = useState(defaultAppContext.settings.timeFormat);
   const [viewStack, setViewStack] = useState<IViewStackItem[]>([]);
@@ -52,6 +51,22 @@ const AppContext = (props: PropsWithChildren) => {
     );
   }, [updateInterval, timeFormat]);
 
+  const pushView = async (component: JSX.Element): Promise<void> => {
+    return new Promise((resolver) => {
+      setViewStack((prev) => {
+        return [...prev, { component, resolver }];
+      });
+    });
+  };
+
+  const popView = (value?: any): void => {
+    const lastView = viewStack.pop();
+    if (lastView && lastView.resolver) {
+      lastView.resolver(value);
+    }
+    setViewStack([...viewStack]);
+  };
+
   return (
     <_AppContext.Provider
       value={{
@@ -59,27 +74,10 @@ const AppContext = (props: PropsWithChildren) => {
           updateInterval,
           timeFormat,
         },
-        settingsShown: showSettings,
-        showSettings() {
-          setShowSettings(true);
-        },
-        hideSettings() {
-          setShowSettings(false);
-        },
         setUpdateInterval,
         setTimeFormat,
-        pushView(component: JSX.Element) {
-          return new Promise((resolver) => {
-            setViewStack([...viewStack, { component, resolver }]);
-          });
-        },
-        popView(value?: any) {
-          const lastView = viewStack.pop();
-          if (lastView) {
-            lastView.resolver(value);
-          }
-          setViewStack([...viewStack]);
-        },
+        pushView,
+        popView,
       }}
     >
       {props.children}

@@ -22,9 +22,7 @@ export default function Settings() {
 
   const inputKeyUp = (ev: KeyboardEvent<HTMLInputElement>) => {
     if (ev.code === "Enter" || ev.code === "NumpadEnter") {
-      appContext.setUpdateInterval(intervalValue * 1000);
-      appContext.setTimeFormat(timeFormat);
-      appContext.hideSettings();
+      closeSettings();
       ev.preventDefault;
     }
   };
@@ -59,11 +57,9 @@ export default function Settings() {
         </div>
         <div className="row">
           <label htmlFor="time-format">Time format</label>
-          <select className="time-format-picker" onChange={changeTimeFormat}>
+          <select className="time-format-picker" onChange={changeTimeFormat} defaultValue={timeFormat}>
             {validTimeFormats.map((x) => (
-              <option key={x} selected={x === timeFormat}>
-                {x}
-              </option>
+              <option key={x}>{x}</option>
             ))}
           </select>
           {/* <input name="time-format" value={timeFormat} onChange={changeTimeFormat} onKeyUp={inputKeyUp} /> */}

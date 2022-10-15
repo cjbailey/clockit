@@ -5,6 +5,7 @@ import Time from "../types/Time";
 import TimerAction from "../types/TimerAction";
 import { WorkListActionType } from "../types/WorkListActionType";
 import { useAppContext } from "./AppContext";
+import Button from "./Button";
 import WorkItem from "./WorkItem";
 
 interface IProps {
@@ -117,7 +118,7 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
         <WorkItem onCreateWorkItem={addItem} />
       </div>
       <div className="work-list-actions">
-        <button onClick={resetAll}>Reset All</button>
+        <Button onClick={resetAll}>Reset All</Button>
       </div>
     </div>
   );

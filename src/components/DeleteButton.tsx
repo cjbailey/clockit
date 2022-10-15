@@ -1,6 +1,7 @@
 import React, { MouseEventHandler } from "react";
 // @ts-ignore
 import { ReactComponent as DeleteIcon } from "../icons/delete-icon.svg";
+import Button from "./Button";
 
 interface IProps {
   onClick?: MouseEventHandler;
@@ -8,8 +9,8 @@ interface IProps {
 
 export default function DeleteButton({ onClick }: IProps): JSX.Element {
   return (
-    <div className="delete-btn" onClick={onClick}>
+    <Button className="delete-btn img-btn" onClick={onClick}>
       <DeleteIcon width="0.8em" />
-    </div>
+    </Button>
   );
 }

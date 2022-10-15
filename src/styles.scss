@@ -23,14 +23,14 @@ body {
   background: -webkit-linear-gradient(top left, $Color-theme-1-hex, #090909);
   background: -moz-linear-gradient(top left, $Color-theme-1-hex, #090909);
   background: linear-gradient(to bottom right, $Color-theme-1-hex, #090909);
+  font-family: "Open Sans";
+  font-size: 16pt;
+  color: white;
 }
 
 .App {
-  font-family: "Open Sans";
-  font-size: 16pt;
-  text-align: center;
-  color: white;
   min-width: 600px;
+  text-align: center;
 
   .app-menu {
     margin: 15px;
@@ -194,7 +194,7 @@ body {
   }
 }
 
-button {
+.button {
   font-family: "Open Sans";
   font-size: 10pt;
   background-color: $Color-theme-3-hex;
@@ -214,6 +214,16 @@ button {
   &[disabled] {
     background-color: #808080;
     cursor: not-allowed;
+  }
+}
+
+.img-btn {
+  background: none;
+  border: none;
+
+  &:hover,
+  &:focus {
+    background: none;
   }
 }
 

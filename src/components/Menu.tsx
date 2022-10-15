@@ -1,22 +1,24 @@
-import React from "react";
 // @ts-ignore
-import { ReactComponent as MenuIcon } from "../icons/menu-icon.svg";
+import React, { ReactComponent as MenuIcon } from "../icons/menu-icon.svg";
 import { useAppContext } from "./AppContext";
+import Button from "./Button";
 import Settings from "./Settings";
 
 export default function Menu() {
   const appContext = useAppContext();
 
   const openSettings = async () => {
-    // appContext.showSettings();
-    await appContext.pushView(<Settings />);
+    if (appContext) {
+      const view = <Settings />;
+      await appContext.pushView(view);
+    }
   };
 
   return (
     <div className="app-menu">
-      <div className="menu-btn" onClick={openSettings}>
+      <Button className="menu-btn" onClick={openSettings}>
         <MenuIcon width="1.5em" className="menu-icon" />
-      </div>
+      </Button>
     </div>
   );
 }

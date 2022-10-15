@@ -2,6 +2,7 @@ import React, { ChangeEvent, KeyboardEvent, useState } from "react";
 import Time from "../types/Time";
 import { WorkListItemId } from "../types/WorkListItemId";
 import { useAppContext } from "./AppContext";
+import Button from "./Button";
 import DeleteButton from "./DeleteButton";
 
 interface IProps {
@@ -111,9 +112,9 @@ export default function WorkItem({
       {title && title.length > 0 && (
         <>
           <div>
-            <button onClick={() => startTimer(id)} disabled={disabled}>
+            <Button onClick={() => startTimer(id)} disabled={disabled}>
               Start
-            </button>
+            </Button>
           </div>
         </>
       )}
