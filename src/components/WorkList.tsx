@@ -138,9 +138,9 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
         <div className="work-item header">
           <div></div>
           <div></div>
-          <div>Start Time</div>
-          <div>Last Start Time</div>
-          <div>Elapsed</div>
+          <div className="start-time">Start Time</div>
+          <div className="last-start-time">Last Start Time</div>
+          <div className="elapsed-time">Elapsed</div>
         </div>
         {renderWorkItems()}
         {/* new item */}
