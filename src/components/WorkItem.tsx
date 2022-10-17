@@ -109,14 +109,10 @@ export default function WorkItem({
         <div className="elapsed-time"></div>
       )}
 
-      {title && title.length > 0 && (
-        <>
-          <div>
-            <Button onClick={() => startTimer(id)} disabled={disabled}>
-              Start
-            </Button>
-          </div>
-        </>
+      {title && title.length > 0 && !disabled && (
+        <div>
+          <Button onClick={() => startTimer(id)}>Start</Button>
+        </div>
       )}
     </div>
   );
