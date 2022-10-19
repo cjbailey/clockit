@@ -13,6 +13,13 @@ interface IProps {
   elapsedTime?: Time;
   disabled?: boolean;
   onCreateWorkItem?: (title: string) => void;
+  onUpdateWorkItem?: (
+    id: WorkListItemId,
+    title: string,
+    startTime: Time,
+    lastStartTime: Time,
+    elapsedTime: Time
+  ) => void;
   onDeleteWorkItem?: (id: WorkListItemId) => void;
   onStartItemTimer?: (id: WorkListItemId) => void;
 }
@@ -25,6 +32,7 @@ export default function WorkItem({
   elapsedTime,
   disabled = false,
   onCreateWorkItem,
+  onUpdateWorkItem,
   onDeleteWorkItem,
   onStartItemTimer,
 }: IProps) {
@@ -36,7 +44,18 @@ export default function WorkItem({
   };
 
   const titleInput = (ev: ChangeEvent<HTMLInputElement>) => {
-    setTitle(ev.currentTarget.value || "");
+    const title: string = ev.currentTarget.value || "";
+    setTitle(title);
+
+    if (
+      onUpdateWorkItem &&
+      id &&
+      title &&
+      startTime &&
+      lastStartTime &&
+      elapsedTime
+    )
+      onUpdateWorkItem(id, title, startTime, lastStartTime, elapsedTime);
   };
 
   const keyUp = (ev: KeyboardEvent<HTMLInputElement>) => {
@@ -83,7 +102,12 @@ export default function WorkItem({
         <div></div>
       )}
       <div className="title">
-        <input onChange={titleInput} onKeyUp={keyUp} value={_title} />
+        <input
+          onChange={titleInput}
+          onKeyUp={keyUp}
+          value={_title}
+          placeholder={!id ? "Type something here" : ""}
+        />
       </div>
       {startTime ? (
         <div className="start-time time-hdr" style={timeFormatStyle as any}>
@@ -94,7 +118,10 @@ export default function WorkItem({
       )}
 
       {lastStartTime ? (
-        <div className="last-start-time time-hdr" style={timeFormatStyle as any}>
+        <div
+          className="last-start-time time-hdr"
+          style={timeFormatStyle as any}
+        >
           {lastStartTime.toString(settings.timeFormat)}
         </div>
       ) : (
