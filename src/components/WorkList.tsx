@@ -4,6 +4,7 @@ import IWorkListItem from "../interfaces/IWorkListItem";
 import Time from "../types/Time";
 import TimerAction from "../types/TimerAction";
 import { WorkListActionType } from "../types/WorkListActionType";
+import { WorkListItemId } from "../types/WorkListItemId";
 import { useAppContext } from "./AppContext";
 import Button from "./Button";
 import ConfirmDialog from "./ConfirmDialog";
@@ -15,11 +16,19 @@ interface IProps {
 }
 
 const CONFIRM_RESET_ALL_DIALOG = (
-  <ConfirmDialog message="Are you sure you want to delete all items?" acceptText="Yes" cancelText="No" />
+  <ConfirmDialog
+    message="Are you sure you want to delete all items?"
+    acceptText="Yes"
+    cancelText="No"
+  />
 );
 
 const CONFIRM_RESET_TIMES_DIALOG = (
-  <ConfirmDialog message="Are you sure you want to reset all times?" acceptText="Yes" cancelText="No" />
+  <ConfirmDialog
+    message="Are you sure you want to reset all times?"
+    acceptText="Yes"
+    cancelText="No"
+  />
 );
 
 export default function WorkList({ items, workItemDispatcher }: IProps) {
@@ -51,6 +60,25 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
       activeTimer.stop();
       setActiveTimer(null);
     }
+  };
+
+  const updateItem = (
+    id: WorkListItemId,
+    title: string,
+    startTime: Time,
+    lastStartTime: Time,
+    elapsedTime: Time
+  ) => {
+    workItemDispatcher({
+      type: WorkListActionType.Update,
+      value: {
+        id,
+        title,
+        startTime,
+        lastStartTime,
+        elapsedTime,
+      },
+    });
   };
 
   const startItemTimer = (id: number) => {
@@ -85,7 +113,9 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
   };
 
   const resetAll = async () => {
-    const confirm = await appContext.pushView<boolean>(CONFIRM_RESET_ALL_DIALOG);
+    const confirm = await appContext.pushView<boolean>(
+      CONFIRM_RESET_ALL_DIALOG
+    );
     if (!confirm) {
       return;
     }
@@ -101,7 +131,9 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
   };
 
   const resetTimes = async () => {
-    const confirm = await appContext.pushView<boolean>(CONFIRM_RESET_TIMES_DIALOG);
+    const confirm = await appContext.pushView<boolean>(
+      CONFIRM_RESET_TIMES_DIALOG
+    );
     if (!confirm) {
       return;
     }
@@ -128,6 +160,7 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
         disabled={activeTimer?.workListItem.id === x.id}
         onDeleteWorkItem={deleteItem}
         onStartItemTimer={startItemTimer}
+        onUpdateWorkItem={updateItem}
       />
     ));
   };
@@ -136,8 +169,8 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
     <div className="work-list">
       <div className="work-list-items">
         <div className="work-item header">
-          <div></div>
-          <div></div>
+          <div className="delete"></div>
+          <div className="title"></div>
           <div className="start-time">Start Time</div>
           <div className="last-start-time">Last Start Time</div>
           <div className="elapsed-time">Elapsed</div>

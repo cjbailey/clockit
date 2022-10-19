@@ -1,7 +1,6 @@
 import React, { useReducer } from "react";
-import AppContext, { useAppContext } from "./components/AppContext";
+import { useAppContext } from "./components/AppContext";
 import Menu from "./components/Menu";
-import Settings from "./components/Settings";
 import WorkList from "./components/WorkList";
 import IWorkListItem from "./interfaces/IWorkListItem";
 import "./styles.scss";
@@ -22,9 +21,11 @@ function getWorkList(): IWorkListItem[] {
 }
 
 export default function App() {
-  const [workItems, workItemDispatcher] = useReducer(workItemsReducer, [], getWorkList);
-
-  const appContext = useAppContext();
+  const [workItems, workItemDispatcher] = useReducer(
+    workItemsReducer,
+    [],
+    getWorkList
+  );
 
   return (
     <div className="App">
