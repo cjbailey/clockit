@@ -139,13 +139,10 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
   };
 
   const dragItemStart = (id: WorkListItemId) => {
-    console.log("drag start", id);
     setDragSource(id);
   };
 
   const dragItemEnd = (id: WorkListItemId) => {
-    console.log("drag end", id);
-
     if (dragSource !== dragTarget) {
       const sourceIdx = items.findIndex((x) => x.id === dragSource);
       const targetIdx = items.findIndex((x) => x.id === dragTarget);
@@ -173,7 +170,6 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
   };
 
   const dragItemEnter = (id: WorkListItemId) => {
-    console.log("drag enter", id);
     setDragTarget(id);
   };
 
