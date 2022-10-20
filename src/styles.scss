@@ -52,7 +52,7 @@ $Color-theme-5-rgba: rgba(16, 114, 96, 1);
 }
 
 ::placeholder {
-  color: $Color-theme-3-hex
+  color: $Color-theme-3-hex;
 }
 
 body {
@@ -68,7 +68,6 @@ body {
 }
 
 .App {
-  // min-width: 600px;
   min-height: 100vh;
   padding-bottom: 30px;
   text-align: center;
@@ -191,6 +190,17 @@ body {
         position: relative;
       }
 
+      .handle {
+        padding: 0;
+        cursor: pointer;
+        color: $Color-theme-4-hex;
+
+        svg {
+          width: 16px;
+          fill: $Color-theme-4-hex;
+        }
+      }
+
       .delete {
         width: 32px;
       }
@@ -209,36 +219,37 @@ body {
       }
     }
   }
-  
-  @media (orientation: portrait) and (max-width: 800px) {
+
+  @media (orientation: portrait) and (max-width: 700px) {
     .work-list-items {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      
+
       .work-item {
         position: relative;
         display: block;
         width: 100%;
         text-align: left;
-        
+
         & > div {
           display: inline-block;
           height: 2em;
         }
-        
+
         &.header {
-          .delete, .title {
+          .delete,
+          .title {
             display: none;
           }
         }
-        
+
         .delete {
           position: absolute;
           left: 0px;
           top: 10px;
         }
-        
+
         .title {
           $margin-left: 50px;
           display: block;
@@ -246,7 +257,7 @@ body {
           margin-bottom: 10px;
           width: calc(100% - $margin-left - 40px);
         }
-        
+
         .last-start-time {
           display: none;
         }

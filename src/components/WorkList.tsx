@@ -16,27 +16,24 @@ interface IProps {
 }
 
 const CONFIRM_RESET_ALL_DIALOG = (
-  <ConfirmDialog
-    message="Are you sure you want to delete all items?"
-    acceptText="Yes"
-    cancelText="No"
-  />
+  <ConfirmDialog message="Are you sure you want to delete all items?" acceptText="Yes" cancelText="No" />
 );
 
 const CONFIRM_RESET_TIMES_DIALOG = (
-  <ConfirmDialog
-    message="Are you sure you want to reset all times?"
-    acceptText="Yes"
-    cancelText="No"
-  />
+  <ConfirmDialog message="Are you sure you want to reset all times?" acceptText="Yes" cancelText="No" />
 );
+
+const CONFIRM_DELETE_DIALOG = <ConfirmDialog message="Delete the item?" acceptText="Yes" cancelText="No" />;
 
 export default function WorkList({ items, workItemDispatcher }: IProps) {
   const [activeTimer, setActiveTimer] = useState<TimerAction | null>(null);
+  const [dragSource, setDragSource] = useState<WorkListItemId | null>(null);
+  const [dragTarget, setDragTarget] = useState<WorkListItemId | null>(null);
+
   const appContext = useAppContext();
 
   const addItem = (title: string) => {
-    const lastIdx = items.at(-1)?.id || 0;
+    const lastIdx = items.reduce<WorkListItemId>((prev, curr) => (curr.id > prev ? curr.id : prev), 0);
 
     workItemDispatcher({
       type: WorkListActionType.Create,
@@ -50,7 +47,10 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
     });
   };
 
-  const deleteItem = (id: number) => {
+  const deleteItem = async (id: number) => {
+    const confirm = await appContext.pushView<boolean>(CONFIRM_DELETE_DIALOG);
+    if (!confirm) return;
+
     workItemDispatcher({
       type: WorkListActionType.Delete,
       value: id,
@@ -62,13 +62,7 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
     }
   };
 
-  const updateItem = (
-    id: WorkListItemId,
-    title: string,
-    startTime: Time,
-    lastStartTime: Time,
-    elapsedTime: Time
-  ) => {
+  const updateItem = (id: WorkListItemId, title: string, startTime: Time, lastStartTime: Time, elapsedTime: Time) => {
     workItemDispatcher({
       type: WorkListActionType.Update,
       value: {
@@ -113,9 +107,7 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
   };
 
   const resetAll = async () => {
-    const confirm = await appContext.pushView<boolean>(
-      CONFIRM_RESET_ALL_DIALOG
-    );
+    const confirm = await appContext.pushView<boolean>(CONFIRM_RESET_ALL_DIALOG);
     if (!confirm) {
       return;
     }
@@ -131,9 +123,7 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
   };
 
   const resetTimes = async () => {
-    const confirm = await appContext.pushView<boolean>(
-      CONFIRM_RESET_TIMES_DIALOG
-    );
+    const confirm = await appContext.pushView<boolean>(CONFIRM_RESET_TIMES_DIALOG);
     if (!confirm) {
       return;
     }
@@ -146,6 +136,45 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
       activeTimer.stop();
       setActiveTimer(null);
     }
+  };
+
+  const dragItemStart = (id: WorkListItemId) => {
+    console.log("drag start", id);
+    setDragSource(id);
+  };
+
+  const dragItemEnd = (id: WorkListItemId) => {
+    console.log("drag end", id);
+
+    if (dragSource !== dragTarget) {
+      const sourceIdx = items.findIndex((x) => x.id === dragSource);
+      const targetIdx = items.findIndex((x) => x.id === dragTarget);
+
+      if (sourceIdx >= 0 && targetIdx >= 0) {
+        const sourceItem = items[sourceIdx];
+        const targetItem = items[targetIdx];
+
+        items.splice(sourceIdx, 1);
+        items.splice(targetIdx, 0, sourceItem);
+
+        workItemDispatcher({
+          type: WorkListActionType.Update,
+          value: sourceItem,
+        });
+
+        workItemDispatcher({
+          type: WorkListActionType.Update,
+          value: targetItem,
+        });
+      }
+    }
+
+    setDragSource(null);
+  };
+
+  const dragItemEnter = (id: WorkListItemId) => {
+    console.log("drag enter", id);
+    setDragTarget(id);
   };
 
   const renderWorkItems = () => {
@@ -161,6 +190,9 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
         onDeleteWorkItem={deleteItem}
         onStartItemTimer={startItemTimer}
         onUpdateWorkItem={updateItem}
+        onDragStart={dragItemStart}
+        onDragEnd={dragItemEnd}
+        onDragEnter={dragItemEnter}
       />
     ));
   };
@@ -169,6 +201,7 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
     <div className="work-list">
       <div className="work-list-items">
         <div className="work-item header">
+          <div className="handle"></div>
           <div className="delete"></div>
           <div className="title"></div>
           <div className="start-time">Start Time</div>

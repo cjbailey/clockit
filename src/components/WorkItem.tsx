@@ -1,9 +1,10 @@
-import React, { ChangeEvent, KeyboardEvent, useState } from "react";
+import React, { ChangeEvent, DragEvent, KeyboardEvent, useState } from "react";
 import Time from "../types/Time";
 import { WorkListItemId } from "../types/WorkListItemId";
 import { useAppContext } from "./AppContext";
 import Button from "./Button";
 import DeleteButton from "./DeleteButton";
+import { ReactComponent as GrabHandleIcon } from "../icons/grab-handle.svg";
 
 interface IProps {
   id?: WorkListItemId;
@@ -22,6 +23,9 @@ interface IProps {
   ) => void;
   onDeleteWorkItem?: (id: WorkListItemId) => void;
   onStartItemTimer?: (id: WorkListItemId) => void;
+  onDragStart?: (id: WorkListItemId) => void;
+  onDragEnd?: (id: WorkListItemId) => void;
+  onDragEnter?: (id: WorkListItemId) => void;
 }
 
 export default function WorkItem({
@@ -35,6 +39,9 @@ export default function WorkItem({
   onUpdateWorkItem,
   onDeleteWorkItem,
   onStartItemTimer,
+  onDragStart,
+  onDragEnd,
+  onDragEnter,
 }: IProps) {
   const { settings } = useAppContext();
   const [_title, setTitle] = useState(title);
@@ -47,14 +54,7 @@ export default function WorkItem({
     const title: string = ev.currentTarget.value || "";
     setTitle(title);
 
-    if (
-      onUpdateWorkItem &&
-      id &&
-      title &&
-      startTime &&
-      lastStartTime &&
-      elapsedTime
-    )
+    if (onUpdateWorkItem && id && title && startTime && lastStartTime && elapsedTime)
       onUpdateWorkItem(id, title, startTime, lastStartTime, elapsedTime);
   };
 
@@ -92,8 +92,47 @@ export default function WorkItem({
     }
   };
 
+  const dragBegin = (id: WorkListItemId | undefined) => {
+    if (id === undefined) {
+      return;
+    }
+
+    if (onDragStart) {
+      onDragStart(id);
+    }
+  };
+
+  const grabEnd = (id: WorkListItemId | undefined, ev: DragEvent) => {
+    if (id === undefined) {
+      return;
+    }
+
+    if (onDragEnd) {
+      onDragEnd(id);
+    }
+  };
+
+  const dragEnter = (id: WorkListItemId | undefined, ev: DragEvent) => {
+    if (id === undefined) {
+      return;
+    }
+
+    if (onDragEnter) {
+      onDragEnter(id);
+    }
+  };
+
   return (
-    <div key={id} className="work-item">
+    <div
+      key={id}
+      data-id={id}
+      className="work-item"
+      draggable={id !== undefined}
+      onDragStart={() => dragBegin(id)}
+      onDragEnd={(ev) => grabEnd(id, ev)}
+      onDragEnter={(ev) => dragEnter(id, ev)}
+    >
+      <div className="handle">{id !== undefined && <GrabHandleIcon />}</div>
       {title && title.length > 0 ? (
         <div className="delete">
           <DeleteButton onClick={() => deleteItem(id)} />
@@ -102,12 +141,7 @@ export default function WorkItem({
         <div></div>
       )}
       <div className="title">
-        <input
-          onChange={titleInput}
-          onKeyUp={keyUp}
-          value={_title}
-          placeholder={!id ? "Type something here" : ""}
-        />
+        <input onChange={titleInput} onKeyUp={keyUp} value={_title} placeholder={!id ? "Type something here" : ""} />
       </div>
       {startTime ? (
         <div className="start-time time-hdr" style={timeFormatStyle as any}>
@@ -118,10 +152,7 @@ export default function WorkItem({
       )}
 
       {lastStartTime ? (
-        <div
-          className="last-start-time time-hdr"
-          style={timeFormatStyle as any}
-        >
+        <div className="last-start-time time-hdr" style={timeFormatStyle as any}>
           {lastStartTime.toString(settings.timeFormat)}
         </div>
       ) : (
