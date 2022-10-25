@@ -1,9 +1,18 @@
-
 export default class Time {
   private timeInMs: number;
 
-  constructor(initial = 0) {
-    this.timeInMs = initial;
+  constructor(initial: number | string = 0) {
+    if (typeof initial === "number") {
+      this.timeInMs = initial;
+    } else {
+      const parts = initial.split(":");
+
+      const hours = parts.length > 0 ? parseInt(parts[0], 10) : 0;
+      const minutes = parts.length > 1 ? parseInt(parts[1], 10) : 0;
+      const seconds = parts.length > 2 ? parseInt(parts[2], 10) : 0;
+
+      this.timeInMs = hours * 3600000 + minutes * 60000 + seconds * 1000;
+    }
   }
 
   public get timeInMilliseconds() {
@@ -19,18 +28,10 @@ export default class Time {
   }
 
   public toString(format = "hh:mm:ss.SSS") {
-    const hours = ("00" + Math.floor(this.timeInMs / 3600000).toFixed(0)).slice(
-      -2
-    );
-    const minutes = (
-      "00" + Math.floor((this.timeInMs % 3600000) / 60000).toFixed(0)
-    ).slice(-2);
-    const seconds = (
-      "00" + Math.floor(((this.timeInMs % 3600000) % 60000) / 1000).toFixed(0)
-    ).slice(-2);
-    const millisecs = (
-      "000" + Math.floor(((this.timeInMs % 3600000) % 60000) % 1000).toFixed(0)
-    ).slice(-3);
+    const hours = ("00" + Math.floor(this.timeInMs / 3600000).toFixed(0)).slice(-2);
+    const minutes = ("00" + Math.floor((this.timeInMs % 3600000) / 60000).toFixed(0)).slice(-2);
+    const seconds = ("00" + Math.floor(((this.timeInMs % 3600000) % 60000) / 1000).toFixed(0)).slice(-2);
+    const millisecs = ("000" + Math.floor(((this.timeInMs % 3600000) % 60000) % 1000).toFixed(0)).slice(-3);
 
     let formatted = format.replace("hh", hours);
     formatted = formatted.replace("mm", minutes);

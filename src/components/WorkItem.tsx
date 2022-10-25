@@ -26,6 +26,7 @@ interface IProps {
   onDragStart?: (id: WorkListItemId) => void;
   onDragEnd?: (id: WorkListItemId) => void;
   onDragEnter?: (id: WorkListItemId) => void;
+  onEditStartTime?: (id: WorkListItemId) => void;
 }
 
 export default function WorkItem({
@@ -42,6 +43,7 @@ export default function WorkItem({
   onDragStart,
   onDragEnd,
   onDragEnter,
+  onEditStartTime,
 }: IProps) {
   const { settings } = useAppContext();
   const [_title, setTitle] = useState(title);
@@ -122,6 +124,16 @@ export default function WorkItem({
     }
   };
 
+  const editStartTime = (id: WorkListItemId | undefined) => {
+    if (id === undefined) {
+      return;
+    }
+
+    if (onEditStartTime) {
+      onEditStartTime(id);
+    }
+  };
+
   return (
     <div
       key={id}
@@ -144,7 +156,7 @@ export default function WorkItem({
         <input onChange={titleInput} onKeyUp={keyUp} value={_title} placeholder={!id ? "Type something here" : ""} />
       </div>
       {startTime ? (
-        <div className="start-time time-hdr" style={timeFormatStyle as any}>
+        <div className="start-time time-hdr" style={timeFormatStyle as any} onDoubleClick={() => editStartTime(id)}>
           {startTime.toString(settings.timeFormat)}
         </div>
       ) : (

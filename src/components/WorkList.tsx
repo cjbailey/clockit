@@ -8,6 +8,7 @@ import { WorkListItemId } from "../types/WorkListItemId";
 import { useAppContext } from "./AppContext";
 import Button from "./Button";
 import ConfirmDialog from "./ConfirmDialog";
+import EditStartTimeDialog from "./EditStartTimeDialog";
 import WorkItem from "./WorkItem";
 
 interface IProps {
@@ -173,6 +174,25 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
     setDragTarget(id);
   };
 
+  const editStartTime = async (id: WorkListItemId) => {
+    const idx = items.findIndex((x) => x.id === id);
+    if (idx < 0) {
+      return;
+    }
+
+    const item = items[idx];
+    const startTime = item.startTime;
+    const lastStartTime = item.lastStartTime;
+    const elapsedTime = item.elapsedTime;
+
+    const view = <EditStartTimeDialog startTime={startTime} />;
+
+    const newStartTime = await appContext.pushView<Time>(view);
+    if (newStartTime) {
+      updateItem(id, item.title, newStartTime, lastStartTime, elapsedTime);
+    }
+  };
+
   const renderWorkItems = () => {
     return items.map((x) => (
       <WorkItem
@@ -189,6 +209,7 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
         onDragStart={dragItemStart}
         onDragEnd={dragItemEnd}
         onDragEnter={dragItemEnter}
+        onEditStartTime={editStartTime}
       />
     ));
   };

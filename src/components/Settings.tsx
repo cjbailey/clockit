@@ -1,6 +1,7 @@
 import React, { ChangeEvent, KeyboardEvent, MouseEvent, useState } from "react";
 import { useAppContext } from "./AppContext";
 import DeleteButton from "./DeleteButton";
+import Dialog from "./Dialog";
 
 const validTimeFormats = ["hh:mm:ss", "hh:mm"];
 
@@ -12,7 +13,6 @@ export default function Settings() {
   const closeSettings = () => {
     appContext.setUpdateInterval(intervalValue * 1000);
     appContext.setTimeFormat(timeFormat);
-    // appContext.hideSettings();
     appContext.popView();
   };
 
@@ -31,41 +31,43 @@ export default function Settings() {
     setTimeFormat(ev.target.value);
   };
 
-  const clickOutsideComponent = (ev: MouseEvent<HTMLDivElement>) => {
-    if ((ev.target as HTMLElement)?.className === "settings-component") {
-      closeSettings();
-    }
+  const clickOutsideComponent = () => {
+    closeSettings();
   };
 
   return (
-    <div className="settings-component" onClick={clickOutsideComponent}>
-      <div className="settings-inner">
-        <h2>Settings</h2>
-        <div className="row">
-          <label htmlFor="update-interval">Update every</label>
-          {/* <span>Update every</span> */}
-          <input
-            name="update-interval"
-            type="number"
-            value={intervalValue}
-            onChange={changeInterval}
-            onKeyUp={inputKeyUp}
-            min={0}
-            max={300}
-          />
-          <span>seconds</span>
-        </div>
-        <div className="row">
-          <label htmlFor="time-format">Time format</label>
-          <select className="time-format-picker" onChange={changeTimeFormat} defaultValue={timeFormat}>
-            {validTimeFormats.map((x) => (
-              <option key={x}>{x}</option>
-            ))}
-          </select>
-          {/* <input name="time-format" value={timeFormat} onChange={changeTimeFormat} onKeyUp={inputKeyUp} /> */}
-        </div>
-        <DeleteButton onClick={closeSettings} />
+    <Dialog className="settings-component" title="Settings" onClose={clickOutsideComponent}>
+      <div className="row">
+        <label htmlFor="update-interval" className="dialog-input-label">
+          Update every
+        </label>
+        <input
+          name="update-interval"
+          className="dialog-input-control"
+          type="number"
+          value={intervalValue}
+          onChange={changeInterval}
+          onKeyUp={inputKeyUp}
+          min={0}
+          max={300}
+        />
+        <span>seconds</span>
       </div>
-    </div>
+      <div className="row">
+        <label htmlFor="time-format" className="dialog-input-label">
+          Time format
+        </label>
+        <select
+          className="dialog-input control time-format-picker"
+          onChange={changeTimeFormat}
+          defaultValue={timeFormat}
+        >
+          {validTimeFormats.map((x) => (
+            <option key={x}>{x}</option>
+          ))}
+        </select>
+        {/* <input name="time-format" value={timeFormat} onChange={changeTimeFormat} onKeyUp={inputKeyUp} /> */}
+      </div>
+    </Dialog>
   );
 }

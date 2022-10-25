@@ -93,59 +93,39 @@ body {
   }
 }
 
-.settings-component {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #042326aa;
+.dialog {
+  background-color: $Color-theme-2-hex;
+  margin: 50vh auto;
+  padding: 20px 40px 40px 40px;
+  max-width: 400px;
+  transform: translateY(-50%);
+  border-radius: 3px;
+  font-size: 14pt;
+  text-align: left;
 
-  .settings-inner {
-    background-color: $Color-theme-2-hex;
-    margin: 50vh auto;
-    padding: 20px 40px 40px 40px;
-    max-width: 400px;
-    transform: translateY(-50%);
-    border-radius: 3px;
+  .row {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    margin-bottom: 10px;
+  }
+
+  .dialog-header {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: $Color-theme-4-hex;
+    font-style: italic;
     font-size: 14pt;
-    text-align: left;
+  }
 
-    h2 {
-      margin-top: 0;
-      color: $Color-theme-4-hex;
-      font-style: italic;
-      font-size: 14pt;
-    }
-
-    .row {
-      display: flex;
-      flex-direction: row;
-      margin-bottom: 10px;
-    }
-
-    label {
-      margin-right: 10px;
-      width: 120px;
-    }
-
-    input {
-      width: 100px;
-      margin-right: 10px;
-    }
-
-    .time-format-picker {
-      background: none;
-      border: none;
-      border-bottom: 1px solid $Color-theme-4-hex;
-      border-radius: 3px;
-      color: inherit;
-      font-size: inherit;
-
-      option {
-        background-color: $Color-theme-3-hex;
-      }
-    }
+  .dialog-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
 
     .delete-btn {
       position: absolute;
@@ -161,6 +141,55 @@ body {
         }
       }
     }
+  }
+
+  .dialog-input-label {
+    // display: inline-block;
+    // margin-bottom: 5px;
+    margin-right: 10px;
+    font-size: 12pt;
+  }
+
+  .dialog-input-control {
+    // display: inline-block;
+    padding: 10px;
+    // margin-bottom: 20px;
+    margin-right: 20px;
+    border: none;
+    border-radius: 3px;
+    background-color: $Color-theme-3-hex;
+    color: white;
+    font-size: 12pt;
+    outline: none;
+  }
+}
+
+.settings-component {
+  label {
+    width: 120px;
+  }
+
+  input {
+    width: 100px;
+  }
+
+  .time-format-picker {
+    background: none;
+    border: none;
+    border-bottom: 1px solid $Color-theme-4-hex;
+    border-radius: 3px;
+    color: inherit;
+    font-size: inherit;
+
+    option {
+      background-color: $Color-theme-3-hex;
+    }
+  }
+}
+
+.edit-start-time-dialog {
+  .dialog-input-label {
+    width: 120px;
   }
 }
 
