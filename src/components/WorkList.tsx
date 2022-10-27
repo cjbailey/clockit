@@ -16,6 +16,11 @@ interface IProps {
   workItemDispatcher: Dispatch<IWorkListItemAction>;
 }
 
+interface IActiveTimer {
+  id: WorkListItemId;
+  timer: TimerAction;
+}
+
 const CONFIRM_RESET_ALL_DIALOG = (
   <ConfirmDialog message="Are you sure you want to delete all items?" acceptText="Yes" cancelText="No" />
 );
@@ -27,7 +32,7 @@ const CONFIRM_RESET_TIMES_DIALOG = (
 const CONFIRM_DELETE_DIALOG = <ConfirmDialog message="Delete the item?" acceptText="Yes" cancelText="No" />;
 
 export default function WorkList({ items, workItemDispatcher }: IProps) {
-  const [activeTimer, setActiveTimer] = useState<TimerAction | null>(null);
+  const [activeTimer, setActiveTimer] = useState<IActiveTimer | null>(null);
   const [dragSource, setDragSource] = useState<WorkListItemId | null>(null);
   const [dragTarget, setDragTarget] = useState<WorkListItemId | null>(null);
 
@@ -57,8 +62,8 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
       value: id,
     });
 
-    if (activeTimer && activeTimer.workListItem.id === id) {
-      activeTimer.stop();
+    if (activeTimer && activeTimer.id === id) {
+      activeTimer.timer.stop();
       setActiveTimer(null);
     }
   };
@@ -76,35 +81,33 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
     });
   };
 
-  const startItemTimer = (id: number) => {
-    const idx = items.findIndex((x) => x.id === id);
-    if (idx < 0) {
-      return;
-    }
+  const startItemTimer = (item: IWorkListItem, resume = false) => {
+    if (!resume) {
+      if (item.startTime.timeInMilliseconds === 0) {
+        item.startTime = Time.now();
+      }
 
-    if (items[idx].startTime.timeInMilliseconds === 0) {
-      items[idx].startTime = Time.now();
+      item.lastStartTime = Time.now();
     }
-
-    items[idx].lastStartTime = Time.now();
 
     if (activeTimer) {
-      activeTimer.stop();
+      activeTimer.timer.stop();
     }
 
     const timer = new TimerAction(
-      items[idx],
-      () => {
+      item.elapsedTime,
+      item.lastStartTime,
+      (currentElapsedTime) => {
         workItemDispatcher({
           type: WorkListActionType.Update,
-          value: items[idx],
+          value: { ...item, elapsedTime: currentElapsedTime },
         });
       },
       appContext.settings.updateInterval
     );
 
     timer.start();
-    setActiveTimer(timer);
+    setActiveTimer({ id: item.id, timer });
   };
 
   const resetAll = async () => {
@@ -118,7 +121,7 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
     });
 
     if (activeTimer) {
-      activeTimer.stop();
+      activeTimer.timer.stop();
       setActiveTimer(null);
     }
   };
@@ -134,7 +137,7 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
     });
 
     if (activeTimer) {
-      activeTimer.stop();
+      activeTimer.timer.stop();
       setActiveTimer(null);
     }
   };
@@ -143,7 +146,7 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
     setDragSource(id);
   };
 
-  const dragItemEnd = (id: WorkListItemId) => {
+  const dragItemEnd = () => {
     if (dragSource !== dragTarget) {
       const sourceIdx = items.findIndex((x) => x.id === dragSource);
       const targetIdx = items.findIndex((x) => x.id === dragTarget);
@@ -187,9 +190,34 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
 
     const view = <EditStartTimeDialog startTime={startTime} />;
 
+    if (activeTimer && activeTimer.id === id) {
+      // Suspend the timer callback until the update is complete
+      activeTimer.timer.stop();
+    }
+
     const newStartTime = await appContext.pushView<Time>(view);
     if (newStartTime) {
-      updateItem(id, item.title, newStartTime, lastStartTime, elapsedTime);
+      const diff = newStartTime.sub(startTime);
+      const newElapsedTime = diff;
+
+      updateItem(id, item.title, newStartTime, lastStartTime, newElapsedTime);
+
+      if (activeTimer && activeTimer.id === id) {
+        const timer = new TimerAction(
+          newElapsedTime,
+          lastStartTime,
+          (currentElapsedTime) => {
+            workItemDispatcher({
+              type: WorkListActionType.Update,
+              value: { ...item, elapsedTime: currentElapsedTime },
+            });
+          },
+          appContext.settings.updateInterval
+        );
+
+        timer.start();
+        setActiveTimer({ id, timer });
+      }
     }
   };
 
@@ -202,9 +230,9 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
         startTime={x.startTime}
         lastStartTime={x.lastStartTime}
         elapsedTime={x.elapsedTime}
-        disabled={activeTimer?.workListItem.id === x.id}
+        disabled={activeTimer?.id === x.id}
         onDeleteWorkItem={deleteItem}
-        onStartItemTimer={startItemTimer}
+        onStartItemTimer={(id) => startItemTimer(items.filter((x) => x.id === id)[0])}
         onUpdateWorkItem={updateItem}
         onDragStart={dragItemStart}
         onDragEnd={dragItemEnd}
