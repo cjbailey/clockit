@@ -8,6 +8,7 @@ import { WorkListItemId } from "../types/WorkListItemId";
 import { useAppContext } from "./AppContext";
 import Button from "./Button";
 import ConfirmDialog from "./ConfirmDialog";
+import EditTimeDialog from "./EditTimeDialog";
 import WorkItem from "./WorkItem";
 
 interface IProps {
@@ -21,14 +22,30 @@ interface IActiveTimer {
 }
 
 const CONFIRM_RESET_ALL_DIALOG = (
-  <ConfirmDialog message="Are you sure you want to delete all items?" acceptText="Yes" cancelText="No" />
+  <ConfirmDialog
+    message="Are you sure you want to delete all items?"
+    acceptText="Yes"
+    cancelText="No"
+    className="warning"
+  />
 );
 
 const CONFIRM_RESET_TIMES_DIALOG = (
-  <ConfirmDialog message="Are you sure you want to reset all times?" acceptText="Yes" cancelText="No" />
+  <ConfirmDialog
+    message="Are you sure you want to reset all times?"
+    acceptText="Yes"
+    cancelText="No"
+    className="warning"
+  />
 );
 
-const CONFIRM_DELETE_DIALOG = <ConfirmDialog message="Delete the item?" acceptText="Yes" cancelText="No" />;
+const CONFIRM_DELETE_DIALOG = (
+  <ConfirmDialog message="Delete the item?" acceptText="Yes" cancelText="No" className="warning" />
+);
+
+const EDIT_TIME_OF_ACTIVE_TIMER_NOT_ALLOWED_DIALOG = (
+  <ConfirmDialog message="Editing the time of an active timer is not allowed." acceptText="OK" className="error" />
+);
 
 export default function WorkList({ items, workItemDispatcher }: IProps) {
   const [activeTimer, setActiveTimer] = useState<IActiveTimer | null>(null);
@@ -176,6 +193,36 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
     setDragTarget(id);
   };
 
+  const editTime = async (id: WorkListItemId) => {
+    const idx = items.findIndex((x) => x.id === id);
+    if (idx < 0) {
+      return;
+    }
+
+    const item = items[idx];
+    const startTime = item.startTime;
+    const lastStartTime = item.lastStartTime;
+    const elapsedTime = item.elapsedTime;
+
+    if (id === activeTimer?.id) {
+      await appContext.pushView<boolean>(EDIT_TIME_OF_ACTIVE_TIMER_NOT_ALLOWED_DIALOG);
+      return;
+    }
+
+    const view = <EditTimeDialog startTime={startTime} elapsedTime={elapsedTime} />;
+    const viewResult = await appContext.pushView<{ startTime: Time; elapsedTime: Time }>(view);
+
+    if (viewResult) {
+      // const diff = viewResult.startTime.sub(startTime);
+      // if (diff.timeInMilliseconds < 0) {
+      //   await appContext.pushView<boolean>(INVALID_TIME_DIALOG);
+      //   return;
+      // }
+
+      updateItem(id, item.title, viewResult.startTime, lastStartTime, viewResult.elapsedTime);
+    }
+  };
+
   const renderWorkItems = () => {
     return items.map((x) => (
       <WorkItem
@@ -192,6 +239,7 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
         onDragStart={dragItemStart}
         onDragEnd={dragItemEnd}
         onDragEnter={dragItemEnter}
+        onEditTime={editTime}
       />
     ));
   };

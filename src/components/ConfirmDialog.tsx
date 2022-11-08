@@ -5,10 +5,11 @@ import Button from "./Button";
 interface IProps {
   message: string;
   acceptText: string;
-  cancelText: string;
+  cancelText?: string;
+  className?: string;
 }
 
-export default function ConfirmDialog({ message, acceptText, cancelText }: IProps) {
+export default function ConfirmDialog({ message, acceptText, cancelText, className = "" }: IProps) {
   const appContext = useAppContext();
 
   const accept = async () => {
@@ -25,15 +26,17 @@ export default function ConfirmDialog({ message, acceptText, cancelText }: IProp
 
   return (
     <div className="full-screen-overlay">
-      <div className="confirm-dialog">
+      <div className={`confirm-dialog ${className}`}>
         <div className="confirm-dialog-message">{message}</div>
         <div className="confirm-dialog-buttons">
           <Button className="confirm-dialog-btn" onClick={accept}>
             {acceptText}
           </Button>
-          <Button className="confirm-dialog-btn" onClick={cancel}>
-            {cancelText}
-          </Button>
+          {cancelText && (
+            <Button className="confirm-dialog-btn" onClick={cancel}>
+              {cancelText}
+            </Button>
+          )}
         </div>
       </div>
     </div>
