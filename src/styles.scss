@@ -407,6 +407,14 @@ input {
       margin: 0 10px;
     }
   }
+
+  &.error {
+    border: 2px solid #ff0000;
+  }
+
+  &.warning {
+    border: 2px solid #ff9900;
+  }
 }
 
 @keyframes glow {

@@ -26,7 +26,7 @@ interface IProps {
   onDragStart?: (id: WorkListItemId) => void;
   onDragEnd?: (id: WorkListItemId) => void;
   onDragEnter?: (id: WorkListItemId) => void;
-  onEditStartTime?: (id: WorkListItemId) => void;
+  onEditTime?: (id: WorkListItemId) => void;
 }
 
 export default function WorkItem({
@@ -43,7 +43,7 @@ export default function WorkItem({
   onDragStart,
   onDragEnd,
   onDragEnter,
-  onEditStartTime,
+  onEditTime,
 }: IProps) {
   const { settings } = useAppContext();
   const [_title, setTitle] = useState(title);
@@ -124,13 +124,13 @@ export default function WorkItem({
     }
   };
 
-  const editStartTime = (id: WorkListItemId | undefined) => {
+  const editTime = (id: WorkListItemId | undefined) => {
     if (id === undefined) {
       return;
     }
 
-    if (onEditStartTime) {
-      onEditStartTime(id);
+    if (onEditTime) {
+      onEditTime(id);
     }
   };
 
@@ -156,7 +156,7 @@ export default function WorkItem({
         <input onChange={titleInput} onKeyUp={keyUp} value={_title} placeholder={!id ? "Type something here" : ""} />
       </div>
       {startTime ? (
-        <div className="start-time time-hdr" style={timeFormatStyle as any} onDoubleClick={() => editStartTime(id)}>
+        <div className="start-time time-hdr" style={timeFormatStyle as any} onDoubleClick={() => editTime(id)}>
           {startTime.toString(settings.timeFormat)}
         </div>
       ) : (
@@ -172,7 +172,7 @@ export default function WorkItem({
       )}
 
       {elapsedTime ? (
-        <div className="elapsed-time time-hdr" style={timeFormatStyle as any}>
+        <div className="elapsed-time time-hdr" style={timeFormatStyle as any} onDoubleClick={() => editTime(id)}>
           {elapsedTime?.toString(settings.timeFormat)}
         </div>
       ) : (
