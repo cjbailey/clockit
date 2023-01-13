@@ -1,4 +1,4 @@
-import React, { ChangeEvent, DragEvent, KeyboardEvent, useState } from "react";
+import React, { ChangeEvent, DragEvent, KeyboardEvent, useRef, useState } from "react";
 import Time from "../types/Time";
 import { WorkListItemId } from "../types/WorkListItemId";
 import { useAppContext } from "./AppContext";
@@ -47,6 +47,7 @@ export default function WorkItem({
 }: IProps) {
   const { settings } = useAppContext();
   const [_title, setTitle] = useState(title);
+  const workItemRef = useRef(null);
 
   const timeFormatStyle = {
     "--format": `"${settings.timeFormat}"`,
@@ -94,9 +95,13 @@ export default function WorkItem({
     }
   };
 
-  const dragBegin = (id: WorkListItemId | undefined) => {
+  const dragBegin = (id: WorkListItemId | undefined, ev: DragEvent) => {
     if (id === undefined) {
       return;
+    }
+
+    if (workItemRef !== null && workItemRef.current !== null) {
+      ev.dataTransfer.setDragImage(workItemRef.current, 10, 20);
     }
 
     if (onDragStart) {
@@ -139,12 +144,15 @@ export default function WorkItem({
       key={id}
       data-id={id}
       className="work-item"
-      draggable={id !== undefined}
-      onDragStart={() => dragBegin(id)}
+      ref={workItemRef}
+      // draggable={id !== undefined}
+      onDragStart={(ev) => dragBegin(id, ev)}
       onDragEnd={(ev) => grabEnd(id, ev)}
       onDragEnter={(ev) => dragEnter(id, ev)}
     >
-      <div className="handle">{id !== undefined && <GrabHandleIcon />}</div>
+      <div className="handle" draggable={id !== undefined}>
+        {id !== undefined && <GrabHandleIcon />}
+      </div>
       {title && title.length > 0 ? (
         <div className="delete">
           <DeleteButton onClick={() => deleteItem(id)} />
