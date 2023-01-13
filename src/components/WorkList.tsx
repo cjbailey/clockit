@@ -48,6 +48,7 @@ const EDIT_TIME_OF_ACTIVE_TIMER_NOT_ALLOWED_DIALOG = (
 );
 
 export default function WorkList({ items, workItemDispatcher }: IProps) {
+  const { settings } = useAppContext();
   const [activeTimer, setActiveTimer] = useState<IActiveTimer | null>(null);
   const [dragSource, setDragSource] = useState<WorkListItemId | null>(null);
   const [dragTarget, setDragTarget] = useState<WorkListItemId | null>(null);
@@ -244,6 +245,21 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
     ));
   };
 
+  const renderTotalLine = () => {
+    const total = items.reduce((prev, curr) => prev.add(curr.elapsedTime), Time.zero());
+
+    return (
+      <div className="work-item total">
+        <div className="handle"></div>
+        <div className="delete"></div>
+        <div className="title">Total</div>
+        <div className="start-time"></div>
+        <div className="last-start-time"></div>
+        <div className="elapsed-time">{total.toString(settings.timeFormat)}</div>
+      </div>
+    );
+  };
+
   return (
     <div className="work-list">
       <div className="work-list-items">
@@ -255,6 +271,7 @@ export default function WorkList({ items, workItemDispatcher }: IProps) {
           <div className="last-start-time">Last Start Time</div>
           <div className="elapsed-time">Elapsed</div>
         </div>
+        {renderTotalLine()}
         {renderWorkItems()}
         {/* new item */}
         <WorkItem onCreateWorkItem={addItem} />

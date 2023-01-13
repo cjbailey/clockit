@@ -219,6 +219,14 @@ body {
         position: relative;
       }
 
+      &.total {
+        .title {
+          text-align: right;
+          color: $Color-theme-3-hex;
+          font-style: italic;
+        }
+      }
+
       .handle {
         padding: 0;
         cursor: pointer;

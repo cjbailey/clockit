@@ -26,6 +26,10 @@ export default class Time {
     return this.timeInMs;
   }
 
+  public static zero() {
+    return new Time(0);
+  }
+
   public add(other: Time): Time {
     return new Time(this.timeInMs + other.timeInMilliseconds);
   }
