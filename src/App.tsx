@@ -6,6 +6,8 @@ import IWorkListItem from "./interfaces/IWorkListItem";
 import "./styles.scss";
 import { workItemsReducer } from "./WorkItemsReducer";
 import { Deserialise } from "./WorkListSerialiser";
+import { ViewStyle } from "./ViewStyle";
+import GanttList from "./components/GanttList";
 
 function getWorkList(): IWorkListItem[] {
   let workListItems: IWorkListItem[] = [];
@@ -21,6 +23,7 @@ function getWorkList(): IWorkListItem[] {
 }
 
 export default function App() {
+  const { settings } = useAppContext();
   const [workItems, workItemDispatcher] = useReducer(
     workItemsReducer,
     [],
@@ -30,7 +33,12 @@ export default function App() {
   return (
     <div className="App">
       <Menu />
-      <WorkList items={workItems} workItemDispatcher={workItemDispatcher} />
+      {settings.currentViewStyle === ViewStyle.Timer &&
+        <WorkList items={workItems} workItemDispatcher={workItemDispatcher} />
+      }
+      {settings.currentViewStyle === ViewStyle.Gantt &&
+        <GanttList items={[]} workItemDispatcher={workItemDispatcher} />
+      }
       {/* {appContext.settingsShown && <Settings />} */}
     </div>
   );

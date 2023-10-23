@@ -2,6 +2,7 @@ import React, { createContext, PropsWithChildren, useContext, useEffect, useStat
 import IAppContext from "../interfaces/IAppContext";
 import IAppSettings from "../interfaces/IAppSettings";
 import IViewStackItem from "../interfaces/IViewStackItem";
+import { ViewStyle } from "../ViewStyle";
 
 const LS_SETTINGS = "clockit-settings";
 
@@ -9,13 +10,15 @@ const defaultAppContext: IAppContext = {
   settings: {
     updateInterval: 30000,
     timeFormat: "hh:mm:ss",
+    currentViewStyle: ViewStyle.Timer
   },
-  setUpdateInterval() {},
-  setTimeFormat() {},
+  setUpdateInterval() { },
+  setTimeFormat() { },
+  setViewStyle() { },
   pushView() {
     return Promise.reject("Not implemented");
   },
-  popView() {},
+  popView() { },
 };
 
 const lsAppSettings = localStorage.getItem(LS_SETTINGS);
@@ -37,6 +40,7 @@ const AppContext = (props: PropsWithChildren) => {
   const [updateInterval, setUpdateInterval] = useState(defaultAppContext.settings.updateInterval);
   const [timeFormat, setTimeFormat] = useState(defaultAppContext.settings.timeFormat);
   const [viewStack, setViewStack] = useState<IViewStackItem[]>([]);
+  const [currentViewStyle, setViewStyle] = useState<ViewStyle>(ViewStyle.Timer);
 
   useEffect(() => {
     localStorage.setItem(
@@ -70,9 +74,11 @@ const AppContext = (props: PropsWithChildren) => {
         settings: {
           updateInterval,
           timeFormat,
+          currentViewStyle
         },
         setUpdateInterval,
         setTimeFormat,
+        setViewStyle,
         pushView,
         popView,
       }}

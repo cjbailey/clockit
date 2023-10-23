@@ -79,15 +79,18 @@ body {
   .app-menu {
     padding: 10px;
     text-align: right;
+    display: flex;
+    flex-direction: row-reverse;
 
     .menu-btn {
       background: none;
       border: none;
       padding: 0;
-      margin: 0;
+      margin: 0 10px;
 
       .menu-icon {
         fill: $Color-theme-5-hex;
+        color: $Color-theme-5-hex;
       }
     }
   }
