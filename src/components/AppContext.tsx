@@ -4,7 +4,7 @@ import IAppSettings from "../interfaces/IAppSettings";
 import IViewStackItem from "../interfaces/IViewStackItem";
 import { ViewStyle } from "../ViewStyle";
 
-const LS_SETTINGS = "clockit-settings";
+const LS_SETTINGS = "timeout-settings";
 
 const defaultAppContext: IAppContext = {
   settings: {
@@ -30,6 +30,7 @@ if (lsAppSettings) {
     JSON.stringify({
       updateInterval: defaultAppContext.settings.updateInterval,
       timeFormat: defaultAppContext.settings.timeFormat,
+      currentViewStyle: defaultAppContext.settings.currentViewStyle
     })
   );
 }
@@ -40,7 +41,7 @@ const AppContext = (props: PropsWithChildren) => {
   const [updateInterval, setUpdateInterval] = useState(defaultAppContext.settings.updateInterval);
   const [timeFormat, setTimeFormat] = useState(defaultAppContext.settings.timeFormat);
   const [viewStack, setViewStack] = useState<IViewStackItem[]>([]);
-  const [currentViewStyle, setViewStyle] = useState<ViewStyle>(ViewStyle.Timer);
+  const [currentViewStyle, setViewStyle] = useState<ViewStyle>(defaultAppContext.settings.currentViewStyle);
 
   useEffect(() => {
     localStorage.setItem(
@@ -48,9 +49,10 @@ const AppContext = (props: PropsWithChildren) => {
       JSON.stringify({
         updateInterval,
         timeFormat,
+        currentViewStyle
       })
     );
-  }, [updateInterval, timeFormat]);
+  }, [updateInterval, timeFormat, currentViewStyle]);
 
   const pushView = async <T,>(component: JSX.Element): Promise<T> => {
     return new Promise((resolver) => {

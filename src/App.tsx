@@ -37,7 +37,7 @@ export default function App() {
         <WorkList items={workItems} workItemDispatcher={workItemDispatcher} />
       }
       {settings.currentViewStyle === ViewStyle.Gantt &&
-        <GanttList items={[]} workItemDispatcher={workItemDispatcher} />
+        <GanttList items={workItems} workItemDispatcher={workItemDispatcher} />
       }
       {/* {appContext.settingsShown && <Settings />} */}
     </div>

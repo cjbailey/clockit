@@ -306,6 +306,82 @@ body {
   }
 }
 
+.gantt-list {
+  .gantt-list-items {
+    border: 1px solid $Color-theme-2-hex;
+    border-radius: 3px;
+    padding: 10px;
+    margin: 10px;
+    display: block;
+    width: -webkit-fill-available;
+
+    .work-item {
+      display: flex;
+      position: relative;
+      text-align: left;
+      align-items: center;
+      justify-content: left;
+      align-content: baseline;
+
+      &.header {
+        color: $Color-theme-4-hex;
+        font-style: italic;
+        font-size: 12pt;
+      }
+
+      & > div {
+        margin: 0px 5px;
+        display: table-cell;
+        padding: 5px 0px;
+        position: relative;
+      }
+
+      &.total {
+        .title {
+          text-align: right;
+          color: $Color-theme-3-hex;
+          font-style: italic;
+        }
+      }
+
+      .handle {
+        padding: 0;
+        cursor: pointer;
+        color: $Color-theme-4-hex;
+
+        svg {
+          width: 16px;
+          fill: $Color-theme-4-hex;
+        }
+      }
+
+      .title {
+        width: 250px;
+        text-align: left;
+      }
+
+      .time-hdr:before {
+        content: var(--format);
+        font-size: 8pt;
+        color: $Color-theme-4-hex;
+        position: absolute;
+        top: -3px;
+      }
+
+      .time-line {
+        display: inline-block;
+        height: 1em;
+        background-color: $Color-theme-5-hex;
+        border-radius: 1em;
+      }
+
+      .start-btn-div {
+        min-width: 55px;
+      }
+    }
+  }
+}
+
 .delete-btn {
   position: relative;
   color: white;
